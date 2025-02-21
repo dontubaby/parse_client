@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "parser_client/app/pb"
+	"parser_client/app/pb"
 )
 
 func main() {
@@ -22,9 +24,16 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	//TODO:обработать в замыкании ошибку функции cancel()
 	defer cancel()
-	response, err := client.GetTable(ctx, &pb.Empty{})
+	response, err := client.GetTable(ctx, &emptypb.Empty{})
 	if err != nil {
 		log.Fatalf("could not get user: %v", err)
 	}
-	log.Printf("User: %v", response)
+
+	for k, _ := range response.Table {
+		fmt.Printf("key: %s\n", k)
+	}
+
+	//fmt.Printf("key: %s value: %v\n", k, v)
+	fmt.Printf("key: %s\n", response.Table["Арт гекса"])
+
 }
